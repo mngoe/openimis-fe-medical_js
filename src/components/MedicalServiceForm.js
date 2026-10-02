@@ -19,7 +19,6 @@ import {
   withHistory,
   withModulesManager,
 } from "@openimis/fe-core";
-import { RIGHT_MEDICALSERVICES, SERVICE_CODE_MAX_LENGTH } from "../constants";
 import MedicalServiceChildPanel from "./MedicalServiceChildPanel";
 import MedicalItemChildPanel from "./MedicalItemChildPanel";
 
@@ -31,6 +30,7 @@ import {
   newMedicalService,
   clearServiceForm
 } from "../actions";
+import { RIGHT_MEDICALSERVICES, SERVICE_CODE_MAX_LENGTH } from "../constants";
 import MedicalServiceMasterPanel from "./MedicalServiceMasterPanel";
 import { validateCategories } from "../utils";
 
@@ -206,26 +206,26 @@ class MedicalServiceForm extends Component {
 
   canSave = () => {
     this.priceCalcul();
-    //console.log(this.state);
 
     return this.state.medicalService &&
       this.state.medicalService.code &&
+      this.state.medicalService.code.length <= SERVICE_CODE_MAX_LENGTH &&
       this.state.medicalService.name &&
       this.state.medicalService.type &&
       !isNaN(this.state.medicalService.price) &&
       this.state.medicalService.level &&
       this.state.medicalService.packagetype &&
       this.state.medicalService.careType &&
-      this.state.medicalService.program &&
       validateCategories(this.state.medicalService.patientCategory) &&
       !this.state.medicalService.validityTo &&
-      this.props.isServiceValid;;
+      this.props.isServiceValid &&
+      this.state.medicalService.program;
 
   }
 
   save = (medicalService) => {
     this.setState(
-      { lockNew: !medicalService.id, isSaved: true }, // avoid duplicates
+      { lockNew: !medicalService?.id, isSaved: true }, // avoid duplicates
       (e) => this.props.save(medicalService),
     );
   };

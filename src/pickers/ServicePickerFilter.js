@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Autocomplete, toISODate, useGraphqlQuery, useTranslations } from "@openimis/fe-core";
+import { Autocomplete, toISODate, useGraphqlQuery, useTranslations, decodeId } from "@openimis/fe-core";
 
 const ServicePickerFilter = (props) => {
   const {
@@ -12,6 +12,7 @@ const ServicePickerFilter = (props) => {
     label,
     filterOptions,
     pricelistUuid,
+    healthFacility,
     date,
     filterSelectedOptions,
     placeholder,
@@ -21,10 +22,10 @@ const ServicePickerFilter = (props) => {
   } = props;
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("medical");
-
+  const healthFacilityId = !!healthFacility && !!healthFacility.id && parseInt(decodeId(healthFacility.id))
   const { isLoading, data, error } = useGraphqlQuery(
-    `query ($searchString: String, $pricelistUuid: UUID, $date: Date) {
-      medicalServicesStr(str: $searchString, pricelistUuid: $pricelistUuid, date: $date) {
+    `query ($searchString: String, $pricelistUuid: UUID, $date: Date, $healthFacilityId: ID ) {
+      medicalServicesStr(str: $searchString, pricelistUuid: $pricelistUuid, date: $date , healthFacilityId: $healthFacilityId) {
         edges {
           node {
             id name code price packagetype
@@ -57,12 +58,12 @@ const ServicePickerFilter = (props) => {
         }
       }
     }`,
-    { pricelistUuid, searchString, date: toISODate(date) },
+    { pricelistUuid, searchString, date: toISODate(date), healthFacilityId },
     { skip: true },
   );
-
   let services = data?.medicalServicesStr?.edges.map((edge) => edge.node) ?? [];
   let options = [];
+
 
   if (claimProgram != '' && claimProgram != undefined && claimProgram != null) {
     services.forEach(function (service) {

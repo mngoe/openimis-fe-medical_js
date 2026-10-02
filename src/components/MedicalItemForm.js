@@ -155,10 +155,10 @@ class MedicalItemForm extends Component {
     this.state.medicalItem.type &&
     !isNaN(this.state.medicalItem.price) &&
     this.state.medicalItem.program &&
-    this.state.medicalItem.careType && 
+    this.state.medicalItem.careType &&
     validateCategories(this.state.medicalItem.patientCategory) &&
     !this.state.medicalItem.validityTo &&
-    this.props.isItemValid;;
+    this.props.isItemValid;
 
   save = (medicalItem) => {
     this.setState({ lockNew: !medicalItem.id, isSaved: true }, (e) => this.props.save(medicalItem));

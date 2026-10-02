@@ -68,7 +68,6 @@ class MedicalServiceMasterPanel extends FormPanel {
       }
     );
   };
-
   shouldValidate = (inputValue) => {
     const { savedServiceCode } = this.props;
     const shouldValidate = inputValue !== savedServiceCode;
@@ -166,7 +165,18 @@ class MedicalServiceMasterPanel extends FormPanel {
             />
           </Grid>
           }
-          <Grid item xs={3} className={classes.item}>
+          <Grid item xs={2} className={classes.item}>
+            <NumberInput
+              min={0}
+              module="admin"
+              label="medical.service.maximumAmount"
+              name="maximumAmount"
+              readOnly={readOnly}
+              value={edited?.maximumAmount ?? ""}
+              onChange={(maximumAmount) => this.updateAttributes({ maximumAmount })}
+            />
+          </Grid>
+          <Grid item xs={4} className={classes.item}>
             <AmountInput
               module="admin"
               label={this.props.medicalService.packagetype == 'F' ? `edit.services.ceiling` : `medical.service.price`}
@@ -190,6 +200,17 @@ class MedicalServiceMasterPanel extends FormPanel {
               readOnly={readOnly}
               required={true}
               onChange={(program) => this.updateAttribute("program", program)}
+            />
+          </Grid>
+          <Grid item xs={3} className={classes.item}>
+            <PublishedComponent
+              pubRef="location.HealthFacilityPicker"
+              name="location"
+              label={formatMessage(intl, "location", "HealthFacilityPicker.label")}
+              placeholder={formatMessage(intl, "location", "HealthFacilityPicker.placeholder")}
+              value={edited ? edited.healthFacility : ""}
+              readOnly={readOnly}
+              onChange={(healthFacility) => this.updateAttribute("healthFacility", healthFacility)}
             />
           </Grid>
         </Grid>
